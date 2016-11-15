@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Word Game</title>
+		<h1 align="center">The Word Game</h1>
+		<link rel="stylesheet" type="text/css" href="style.css"/>
+	</head>	
+	<body>
+	<form id="frm1" action="">
+	  Start word: <input id="i1" type="text" name="fname" value=""><br/><br/>
+	</form>
+	<form id="frm2" action="">
+	  Target word: <input id="i2" type="text" name="fname" value=""><br/><br/>
+	</form>
+	<input type="submit" id="submit" value="Submit" onclick="initalize()">
+	<p id="words"></p>
+	<script src="words.js"></script>
+	<script>
+	
+		var f;
+		var t;
+		var g1;
+		var wordarr=[];
+		var guessword=[];
+		var moves=0;
+		var words = document.getElementById("words");
+		function firstWord() {
+			var x = document.getElementById("i1").value;
+			return x;
+			}
+		
+		function targWord() {
+			var x = document.getElementById("i2").value;
+			return x;
+			}
+					
+		function search(x){
+			  var i=0;
+			  var flag=0;
+			  for(i=0;i<wordarr.length;i++)
+			  {
+				if (x.localeCompare(wordarr[i])==0){flag=1; break;}
+				else flag=0;
+			  }
+			  if (flag==1) {return true;}
+			  else if (flag==0) {return false;}
+		}
+		
+		function guessWord() {
+			var x = document.getElementById("i3").value;
+			if (search(x)==true){
+				return x;
+			}
+			else{
+				alert("Too Many Modifications, Try Again");
+				alert("As a result of your cheating, you get a penalty of 1 move.");
+				return g1;
+				}
+			}
+		
+		function initalize(){
+			f = firstWord();
+			guessword.push(f);
+			t = targWord();
+			if(f==t){
+				document.writeln("<b><h1>The two words entered were the same.</h1><b/>");
+			}
+			else{
+				calculate(f);
+				g1=f;
+			}
+		}
+		function initalize1(){
+			var g = guessWord();
+			guessword.push(g);
+			if(g==t){
+				document.writeln("<b><h1>Congratulations, You've Finished the Game in "+moves+" Moves</h1><b/>");
+				document.writeln("<b><h1>It can be done in a minimum of "+levenshtein(f,t)+" Moves</h1><b/>");
+			}
+			else{
+				calculate(g);
+				g1=g;
+			}
+		}
+			
+		
+		function calculate(g){
+			var i=0;
+			var a = g;
+			document.writeln('<div id="words"></div>');
+			words = document.getElementById("words");
+			words.innerHTML = "";
+			words.innerHTML = "<b>Start Word: </b>"+f+"</br><b>Target Word: </b>"+t+"</br>";
+			words.innerHTML = words.innerHTML + "<b>Your Guesses:</b> "+guessword.join("->")+"</br></br>";
+			words.innerHTML = words.innerHTML + '<b>Your Options are: </b>';
+			arr.forEach(function(v) {
+			var b = v[0];
+			var d = levenshtein(a, b);
+			if(d==1){
+				words.innerHTML = words.innerHTML + b + "--";
+				wordarr.push(b);
+			}
+				});
+			if(wordarr.length==0){alert("It's not a valid English word"); location.reload();}
+			words.innerHTML = words.innerHTML + '<br/><br/><form id="frm3" action=""><b>Guess word:</b> <input id="i3" type="text" name="fname" value=""><br/></form>';
+			words.innerHTML = words.innerHTML + '<input type="submit" value="Submit" onclick="initalize1()">';
+			++moves;
+			words.innerHTML = words.innerHTML + '</br></br> <b>Moves: </b>'+moves;
+		}
+		
+		function levenshtein(a, b) {
+		  var t = [], u, i, j, al = a.length, bl = b.length;
+		  if (!al) { return bl; }
+		  if (!bl) { return al; }
+		  for (j = 0; j <= bl; j++) { t[j] = j; }
+		  for (i = 1; i <= al; i++) {
+			for (u = [i], j = 1; j <= bl; j++) {
+			  u[j] = a[i - 1] === b[j - 1] ? t[j - 1] : Math.min(t[j - 1], t[j], u[j - 1]) + 1;
+			}
+			t = u;
+		  } return u[bl];
+		}
+		</script>
+		
+</body>
+</html>
+
